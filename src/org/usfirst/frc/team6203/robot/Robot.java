@@ -9,9 +9,9 @@ import org.usfirst.frc.team6203.robot.commands.TimedAutoRoutine;
 import org.usfirst.frc.team6203.robot.subsystems.Chassis;
 import org.usfirst.frc.team6203.robot.subsystems.Elevator;
 import org.usfirst.frc.team6203.robot.subsystems.Intake;
+import org.usfirst.frc.team6203.robot.subsystems.LED;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -34,12 +34,12 @@ public class Robot extends IterativeRobot {
 
 	public static CameraServer usbCam;
 
-	public static DigitalOutput arduino1, arduino2, arduino3, arduino4;
-
 	public static Chassis chassis;
 	public static Intake intake;
 	public static Elevator elevator;
 	public static RobotDrive robotDrive;
+	
+	public static LED led;
 
 	// public static Encoder left_encoder;
 	// public static Encoder right_encoder;
@@ -72,6 +72,8 @@ public class Robot extends IterativeRobot {
 		elevator = new Elevator();
 		robotDrive = new RobotDrive();
 
+		led = new LED();
+		
 		// Encoders
 		// left_encoder = new Encoder(RobotMap.left_encoder_channelA,
 		// RobotMap.left_encoder_channelB);
@@ -94,11 +96,6 @@ public class Robot extends IterativeRobot {
 		usbCam.startAutomaticCapture();
 
 		pdp = new PowerDistributionPanel();
-
-		arduino1 = new DigitalOutput(8);
-		arduino2 = new DigitalOutput(9); 
-		arduino3 = new DigitalOutput(6);
-		arduino4 = new DigitalOutput(7);
 
 		chassis.imu.calibrate();
 
@@ -140,20 +137,14 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void disabledInit() {
-		if (fdisable) {
-			arduino3.set(true);
-			arduino4.set(false);
-		} else {
-			arduino3.set(false);
-			arduino4.set(false);
-		}
-
 		chassis.imu.calibrate();
 		chassis.imu.reset();
 	}
 
 	@Override
 	public void disabledPeriodic() {
+		led.pong_or_gg();
+		
 		Scheduler.getInstance().run();
 	}
 
@@ -170,22 +161,18 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousInit() {
-		arduino3.set(true);
-		arduino4.set(true);
-		
 		autonomousCommand = auto_chooser.getSelected();
 		autonomousCommand.start();
 	}
 
 	public void autonomousPeriodic() {
-		arduino3.set(true);
-		arduino4.set(true);
+		led.glhf();
+		
 		Scheduler.getInstance().run();
 	}
 
 	@Override
 	public void teleopInit() {
-		fdisable = true;
 		robotDrive.start();
 	}
 
@@ -193,23 +180,9 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 
-	boolean pressed9 = false, on9 = false;
-
 	public void teleopPeriodic() {
+		led.emote();
 		
-		arduino1.set(OI.elevatorStick.getRawButton(2));
-		arduino2.set(OI.elevatorStick.getRawButton(3));
-
-		if (OI.driverStick.getRawButton(9) && !pressed9) {
-			pressed9 = true;
-			on9 = !on9;
-		} else {
-			pressed9 = false;
-		}
-
-		arduino3.set(false);
-		arduino4.set(on9);
-
 		Scheduler.getInstance().run();
 	}
 

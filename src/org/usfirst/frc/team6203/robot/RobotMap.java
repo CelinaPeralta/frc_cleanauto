@@ -25,6 +25,7 @@ public class RobotMap {
 	//OI
 	public static int controller = 0;
 	public static int controller2 = 1;
+	public static int controller3 = 2;
 	public static int slowspeed = 2;
 	
 	public static int left_encoder_channelA = 0;
@@ -39,9 +40,10 @@ public class RobotMap {
 	public static int DI_bottom = 0;
 	public static int DI_switch = 1;
 	public static int DI_top = 2;
-	
-	
-	
-	
+
+	public static int emoji0 = 0; //msb
+	public static int emoji1 = 1;
+	public static int emoji2 = 2;
+	public static int emoji3 = 3; //lsb
 	
 }

@@ -11,10 +11,12 @@ public class OI {
 
 	public static Joystick driverStick;
 	public static Joystick elevatorStick;
+	public static Joystick emojiStick;
 
 	public OI() {
 		driverStick = new Joystick(RobotMap.controller);
 		elevatorStick = new Joystick(RobotMap.controller2);
+		emojiStick = new Joystick(RobotMap.controller3);
 	}
 	
 	
