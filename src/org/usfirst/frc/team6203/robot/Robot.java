@@ -41,12 +41,6 @@ public class Robot extends IterativeRobot {
 	
 	public static LED led;
 
-	// public static Encoder left_encoder;
-	// public static Encoder right_encoder;
-	//
-	// public static PIDController left_PID_controller;
-	// public static PIDController right_PID_controller;
-
 	int robot_position;
 	int switch_position;
 	int scale_position;
@@ -73,24 +67,6 @@ public class Robot extends IterativeRobot {
 		robotDrive = new RobotDrive();
 
 		led = new LED();
-		
-		// Encoders
-		// left_encoder = new Encoder(RobotMap.left_encoder_channelA,
-		// RobotMap.left_encoder_channelB);
-		// right_encoder = new Encoder(RobotMap.right_encoder_channelA,
-		// RobotMap.right_encoder_channelB);
-
-		// left_encoder.setDistancePerPulse(Constants.kDistancePerPulse);
-		// right_encoder.setDistancePerPulse(Constants.kDistancePerPulse);
-
-		// PIDControllers
-		// left_PID_controller = new PIDController(0, 0, 0, left_encoder,
-		// m_left);
-		// right_PID_controller = new PIDController(0, 0, 0, right_encoder,
-		// m_right);
-
-		// left_PID_controller.setAbsoluteTolerance(0.2);
-		// right_PID_controller.setAbsoluteTolerance(0.2);
 
 		usbCam = CameraServer.getInstance();
 		usbCam.startAutomaticCapture();
@@ -109,12 +85,12 @@ public class Robot extends IterativeRobot {
 		if (gameData.length() == 0)
 			gameData = "L";
 
-
 		robot_position = chooser.getSelected();
+//		robot_position = 3 - DriverStation.getInstance().getLocation();
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
 
-		robot_position = 3 - DriverStation.getInstance().getLocation();
+		
 
 		auto_chooser = new SendableChooser<Command>();
 		auto_chooser.addDefault("Baseline", new BaseLineAuto());
