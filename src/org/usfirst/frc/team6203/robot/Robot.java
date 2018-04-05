@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot {
 //	PowerDistributionPanel pdp;
 
 	Command autonomousCommand;
-//	SendableChooser<Integer> chooser;
+	SendableChooser<Integer> chooser;
 	SendableChooser<Command> auto_chooser;
 
 	/**
@@ -109,8 +109,10 @@ public class Robot extends IterativeRobot {
 		if (gameData.length() == 0)
 			gameData = "L";
 
-		switch_position = gameData.charAt(0) == 'L' ? 2 : 0;
-		scale_position = gameData.charAt(1) == 'L' ? 2 : 0;
+
+		robot_position = chooser.getSelected();
+		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
+		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
 
 		robot_position = 3 - DriverStation.getInstance().getLocation();
 

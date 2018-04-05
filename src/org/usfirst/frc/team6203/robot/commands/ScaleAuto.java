@@ -12,7 +12,7 @@ public class ScaleAuto extends CommandGroup {
 			addSequential(new DriveToTimeout(0.8, 0.8, 2.0));
 			addSequential(new DriveAndRaiseElevator(0.4, 6.0, 0.5, 5.0));
 			addSequential(new Wait(0.5));
-			addSequential(new TurnToSetpoint(scale_position == 2 ? 30 : -30));
+			addSequential(new TurnToSetpoint(scale_position == 0 ? 30 : -30));
 			addSequential(new DriveToTimeout(0.3, 0.3, 2.0));
 			addSequential(new Wait(0.5));
 			addSequential(new SetIntake(-0.5, 1.0));

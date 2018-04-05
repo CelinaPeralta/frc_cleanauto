@@ -11,11 +11,11 @@ public class SwitchAuto extends CommandGroup {
 
 	public SwitchAuto(int robot_position, int switch_position) {
 		if (robot_position == 1) {
-			addSequential(new TurnToSetpoint(switch_position == 2 ? -45 : 45));
+			addSequential(new TurnToSetpoint(switch_position == 0 ? -45 : 45));
 			addSequential(new Wait(delay));
 			addSequential(new DriveAndRaiseElevator(0.6, 4.0, 0.5, 4.0));
 			addSequential(new Wait(delay));
-			addSequential(new TurnToSetpoint(switch_position == 2 ? 45 : -45));
+			addSequential(new TurnToSetpoint(switch_position == 0 ? 45 : -45));
 			addSequential(new Wait(delay));
 			addSequential(new DriveToTimeout(0.4, 0.4, 3.0));
 			addSequential(new Wait(delay));
@@ -24,7 +24,7 @@ public class SwitchAuto extends CommandGroup {
 		} else if (robot_position == switch_position) {
 			addSequential(new DriveAndRaiseElevator(0.8, 3.0, 0.5, 4.0));
 			addSequential(new Wait(delay));
-			addSequential(new TurnToSetpoint(switch_position == 2 ? 90 : -90));
+			addSequential(new TurnToSetpoint(switch_position == 0      ? 90 : -90));
 			addSequential(new Wait(delay));
 			addSequential(new DriveToTimeout(0.4, 0.4, 3.0));
 			addSequential(new Wait(delay));
