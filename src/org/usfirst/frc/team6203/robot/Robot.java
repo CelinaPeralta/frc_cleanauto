@@ -38,7 +38,7 @@ public class Robot extends IterativeRobot {
 	public static Intake intake;
 	public static Elevator elevator;
 	public static RobotDrive robotDrive;
-	
+
 	public static LED led;
 
 	int robot_position;
@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
 	int scale_position;
 	boolean fdisable = false;
 
-//	PowerDistributionPanel pdp;
+	// PowerDistributionPanel pdp;
 
 	Command autonomousCommand;
 	SendableChooser<Integer> chooser;
@@ -71,9 +71,14 @@ public class Robot extends IterativeRobot {
 		usbCam = CameraServer.getInstance();
 		usbCam.startAutomaticCapture();
 
-//		pdp = new PowerDistributionPanel();
+		// pdp = new PowerDistributionPanel();
 
 		chassis.imu.calibrate();
+
+		chooser = new SendableChooser<Integer>();
+		chooser.addObject("Left", 0);
+		chooser.addDefault("Middle", 1);
+		chooser.addObject("Right", 2);
 
 		// Get game data
 		double start = System.currentTimeMillis();
@@ -85,21 +90,20 @@ public class Robot extends IterativeRobot {
 		if (gameData.length() == 0)
 			gameData = "L";
 
+		// robot_position = 3 - DriverStation.getInstance().getLocation();
 		robot_position = chooser.getSelected();
-//		robot_position = 3 - DriverStation.getInstance().getLocation();
+
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
-
-		
 
 		auto_chooser = new SendableChooser<Command>();
 		auto_chooser.addDefault("Baseline", new BaseLineAuto());
 		auto_chooser.addObject("Switch", new SwitchAuto(robot_position, switch_position));
 		auto_chooser.addObject("Scale", new ScaleAuto(robot_position, scale_position));
-		auto_chooser.addObject("Timed", new TimedAutoRoutine(robot_position, scale_position));
+		auto_chooser.addObject("Timed", new TimedAutoRoutine(robot_position, switch_position));
 		auto_chooser.addObject("Test", new TestAuto());
 
-//		SmartDashboard.putData("Robot Position", chooser);
+		SmartDashboard.putData("Robot Position", chooser);
 		SmartDashboard.putData("Autonomous Command", auto_chooser);
 		SmartDashboard.putString("Game Data", DriverStation.getInstance().getGameSpecificMessage());
 	}
@@ -118,7 +122,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		led.pong_or_gg();
-		
+
 		Scheduler.getInstance().run();
 	}
 
@@ -141,7 +145,7 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousPeriodic() {
 		led.glhf();
-		
+
 		Scheduler.getInstance().run();
 	}
 
@@ -156,7 +160,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		led.emote();
-		
+
 		Scheduler.getInstance().run();
 	}
 
