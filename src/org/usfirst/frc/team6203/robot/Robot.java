@@ -151,6 +151,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		robotDrive.start();
+		chassis.imu.reset();
 	}
 
 	/**
@@ -159,7 +160,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		led.emote();
-
+		SmartDashboard.putNumber("CURRENT ANGLE", chassis.imu.getAngleZ());
 		Scheduler.getInstance().run();
 	}
 
