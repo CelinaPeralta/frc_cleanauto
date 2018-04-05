@@ -52,10 +52,10 @@ public class Robot extends IterativeRobot {
 	int scale_position;
 	boolean fdisable = false;
 
-	PowerDistributionPanel pdp;
+//	PowerDistributionPanel pdp;
 
 	Command autonomousCommand;
-	SendableChooser<Integer> chooser;
+//	SendableChooser<Integer> chooser;
 	SendableChooser<Command> auto_chooser;
 
 	/**
@@ -95,7 +95,7 @@ public class Robot extends IterativeRobot {
 		usbCam = CameraServer.getInstance();
 		usbCam.startAutomaticCapture();
 
-		pdp = new PowerDistributionPanel();
+//		pdp = new PowerDistributionPanel();
 
 		chassis.imu.calibrate();
 
@@ -109,14 +109,10 @@ public class Robot extends IterativeRobot {
 		if (gameData.length() == 0)
 			gameData = "L";
 
-		robot_position = chooser.getSelected();
 		switch_position = gameData.charAt(0) == 'L' ? 2 : 0;
 		scale_position = gameData.charAt(1) == 'L' ? 2 : 0;
 
-		chooser = new SendableChooser<Integer>();
-		chooser.addObject("Left", 0);
-		chooser.addDefault("Middle", 1);
-		chooser.addObject("Right", 2);
+		robot_position = 3 - DriverStation.getInstance().getLocation();
 
 		auto_chooser = new SendableChooser<Command>();
 		auto_chooser.addDefault("Baseline", new BaseLineAuto());
@@ -125,7 +121,7 @@ public class Robot extends IterativeRobot {
 		auto_chooser.addObject("Timed", new TimedAutoRoutine(robot_position, scale_position));
 		auto_chooser.addObject("Test", new TestAuto());
 
-		SmartDashboard.putData("Robot Position", chooser);
+//		SmartDashboard.putData("Robot Position", chooser);
 		SmartDashboard.putData("Autonomous Command", auto_chooser);
 		SmartDashboard.putString("Game Data", DriverStation.getInstance().getGameSpecificMessage());
 	}

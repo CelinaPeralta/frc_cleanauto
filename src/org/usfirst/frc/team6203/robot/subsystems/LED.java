@@ -10,12 +10,25 @@ import edu.wpi.first.wpilibj.I2C;
 public class LED extends Subsystem {
 
 	I2C p;
+	byte[] prev = {-1};
 
 	public LED() {
 		p = new I2C(I2C.Port.kOnboard, 9);
 	}
 
 	public void set(byte[] data) {
+		boolean eq = prev.length == data.length;
+		for (int i=0;eq && i<data.length;i++)
+			eq = data[i] == prev[i];
+		
+		if (eq) return;
+		
+		prev = data;
+		
+		System.out.print("doing transaction: ");
+		for (int i=0;i<data.length;i++)
+			System.out.print(data[i] + " ");
+		System.out.println("");
 		p.transaction(data, data.length, new byte[0], 0);
 	}
 
@@ -34,17 +47,22 @@ public class LED extends Subsystem {
 
 	public void emote() {
 		byte x = getEmote();
-		byte[] data = { 0, x };
+		byte[] data = { 1, 0, x };
 		set(data);
 	}
 
 	public void glhf() {
-		byte[] data = { 1 };
+		byte[] data = { 1, 1 };
 		set(data);
 	}
 
 	public void pong_or_gg() {
-		byte[] data = { 2 };
+		byte[] data = { 1, 2 };
+		set(data);
+	}
+
+	public void text() {
+		byte[] data = { 1, 2 };
 		set(data);
 	}
 }

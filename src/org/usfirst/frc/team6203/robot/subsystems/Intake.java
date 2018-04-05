@@ -35,12 +35,10 @@ public class Intake extends Subsystem {
 	}
 
 	public void drive() {
-		boolean left = OI.elevatorStick.getRawButton(8);
-		boolean right = OI.elevatorStick.getRawButton(4);
+		boolean right = OI.elevatorStick.getRawButton(0);
+		
 		if (right) {
 			m_intakeDropperMotor.set(-0.8);
-		} else if (left) {
-			m_intakeDropperMotor.set(0.8);
 		} else
 			m_intakeDropperMotor.set(0);
 

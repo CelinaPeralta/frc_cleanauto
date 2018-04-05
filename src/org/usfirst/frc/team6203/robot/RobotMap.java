@@ -41,9 +41,9 @@ public class RobotMap {
 	public static int DI_switch = 1;
 	public static int DI_top = 2;
 
-	public static int emoji0 = 0; //msb
-	public static int emoji1 = 1;
-	public static int emoji2 = 2;
-	public static int emoji3 = 3; //lsb
+	public static int emoji0 = 1; //msb
+	public static int emoji1 = 2;
+	public static int emoji2 = 3;
+	public static int emoji3 = 4; //lsb
 	
 }
