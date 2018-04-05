@@ -13,7 +13,7 @@ public class Chassis extends Subsystem {
 
 	public SpeedControllerGroup m_left, m_right;
 	public DifferentialDrive drive;
-	public Victor leftFrontMotor, rightFrontMotor;
+	public Victor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
 	public ADIS16448_IMU imu;
 
 	private final double kAngleSetpoint = 0.0;
@@ -21,9 +21,11 @@ public class Chassis extends Subsystem {
 	public Chassis() {
 		leftFrontMotor = new Victor(RobotMap.leftMotorF);
 		rightFrontMotor = new Victor(RobotMap.rightMotorF);
+		leftBackMotor = new Victor(RobotMap.leftMotorB);
+		rightBackMotor = new Victor(RobotMap.rightMotorB);
 
-		m_left = new SpeedControllerGroup(leftFrontMotor);
-		m_right = new SpeedControllerGroup(rightFrontMotor);
+		m_left = new SpeedControllerGroup(leftFrontMotor, leftBackMotor);
+		m_right = new SpeedControllerGroup(rightFrontMotor, rightBackMotor);
 
 		m_left.setInverted(true);
 		m_right.setInverted(true);
