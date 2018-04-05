@@ -14,7 +14,15 @@ public class TurnToSetpoint extends Command {
 
 	double rotationSpeed;
 	final double initialRotationSpeed = 0.6;
-	final double kP = 0.03;
+	final double kP = 0.00003;
+	final double kI = 0.00003;
+	final double kD = 0.00003;
+
+	private double previous_error = 0;
+	private double error = 0;
+	private double error_sum = 0;
+	private double current = 0.0;
+	
 
 	public TurnToSetpoint(double angle) {
 		requires(Robot.chassis);
@@ -30,16 +38,30 @@ public class TurnToSetpoint extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
+		current = Robot.chassis.imu.getAngleZ();
+		error = Math.abs(target - current); //maybe not abs
+
+		//look at this jank ass code
 		if (target < 0)
 			Robot.chassis.tankDrive(-rotationSpeed, rotationSpeed);
 		else
 			Robot.chassis.tankDrive(rotationSpeed, -rotationSpeed);
-		
+
 		SmartDashboard.putNumber("AngleZ", Robot.chassis.imu.getAngleZ());
+		SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
+
+		previous_error = error;
+
+//		getPIDOutput();
 	}
 
 	protected void getPIDOutput() {
-		rotationSpeed -= Math.abs(Robot.chassis.imu.getAngleZ() - target) * kP;
+		
+		double P = error * kP;
+		error_sum += error * kI;
+		double D = (error - previous_error) / kD;
+		
+		rotationSpeed = P + error_sum + D;
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.I2C;
 public class LED extends Subsystem {
 
 	I2C p;
-	byte[] prev = {-1};
+	byte[] prev = { -1 };
 
 	public LED() {
 		p = new I2C(I2C.Port.kOnboard, 9);
@@ -18,15 +18,16 @@ public class LED extends Subsystem {
 
 	public void set(byte[] data) {
 		boolean eq = prev.length == data.length;
-		for (int i=0;eq && i<data.length;i++)
+		for (int i = 0; eq && i < data.length; i++)
 			eq = data[i] == prev[i];
-		
-		if (eq) return;
-		
+
+		if (eq)
+			return;
+
 		prev = data;
-		
+
 		System.out.print("doing transaction: ");
-		for (int i=0;i<data.length;i++)
+		for (int i = 0; i < data.length; i++)
 			System.out.print(data[i] + " ");
 		System.out.println("");
 		p.transaction(data, data.length, new byte[0], 0);

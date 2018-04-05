@@ -79,6 +79,7 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Left", 0);
 		chooser.addDefault("Middle", 1);
 		chooser.addObject("Right", 2);
+		chooser.addObject("Baseline", 3);
 
 		// Get game data
 		double start = System.currentTimeMillis();
@@ -89,8 +90,7 @@ public class Robot extends IterativeRobot {
 		while (gameData.length() == 0 && System.currentTimeMillis() - start < 2000);
 		if (gameData.length() == 0)
 			gameData = "L";
-
-		// robot_position = 3 - DriverStation.getInstance().getLocation();
+		
 		robot_position = chooser.getSelected();
 
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
@@ -145,7 +145,6 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousPeriodic() {
 		led.glhf();
-
 		Scheduler.getInstance().run();
 	}
 
