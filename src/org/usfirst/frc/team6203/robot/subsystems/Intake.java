@@ -50,7 +50,7 @@ public class Intake extends Subsystem {
 			setIntakeSpeed(Constants.m_IntakeMaxIntakeSpeed);
 		else if (OI.driverStick.getRawButton(6))
 			setIntakeSpeed(Constants.m_IntakeSlowEjectSpeed);
-		else if (OI.driverStick.getRawButton(3))
+		else if (OI.driverStick.getRawButton(5))
 			setIntakeSpeed(Constants.m_IntakeFastEjectSpeed);
 		else
 			setIntakeSpeed(0);

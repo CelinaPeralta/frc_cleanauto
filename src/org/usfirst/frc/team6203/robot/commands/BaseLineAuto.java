@@ -8,6 +8,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class BaseLineAuto extends CommandGroup {
 
 	public BaseLineAuto() {
-		addSequential(new DriveToTimeout(0.8, 0.8, 4.0));
+		addSequential(new DriveToTimeout(0.8, 0.8, 1.25));
 	}
 }

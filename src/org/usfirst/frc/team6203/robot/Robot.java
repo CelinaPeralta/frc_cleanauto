@@ -6,6 +6,7 @@ import org.usfirst.frc.team6203.robot.commands.ScaleAuto;
 import org.usfirst.frc.team6203.robot.commands.SwitchAuto;
 import org.usfirst.frc.team6203.robot.commands.TestAuto;
 import org.usfirst.frc.team6203.robot.commands.TimedAutoRoutine;
+import org.usfirst.frc.team6203.robot.subsystems.ADIS16448_IMU;
 import org.usfirst.frc.team6203.robot.subsystems.Chassis;
 import org.usfirst.frc.team6203.robot.subsystems.Elevator;
 import org.usfirst.frc.team6203.robot.subsystems.Intake;
@@ -38,6 +39,7 @@ public class Robot extends IterativeRobot {
 	public static Intake intake;
 	public static Elevator elevator;
 	public static RobotDrive robotDrive;
+	public static ADIS16448_IMU imu;
 
 	public static LED led;
 
@@ -46,15 +48,15 @@ public class Robot extends IterativeRobot {
 	int scale_position;
 	boolean fdisable = false;
 
-	// PowerDistributionPanel pdp;
+	PowerDistributionPanel pdp;
 
 	Command autonomousCommand;
 	SendableChooser<Integer> chooser;
 	SendableChooser<Command> auto_chooser;
 
 	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
+	 * This function is run when the robot is first started up and should be used
+	 * for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
@@ -65,58 +67,35 @@ public class Robot extends IterativeRobot {
 		intake = new Intake();
 		elevator = new Elevator();
 		robotDrive = new RobotDrive();
+		imu = new ADIS16448_IMU();
 
 		led = new LED();
 
 		usbCam = CameraServer.getInstance();
 		usbCam.startAutomaticCapture();
 
-		// pdp = new PowerDistributionPanel();
+		pdp = new PowerDistributionPanel();
+		pdp.clearStickyFaults();
 
-		chassis.imu.calibrate();
+		imu.calibrate();
 
 		chooser = new SendableChooser<Integer>();
-		chooser.addObject("Left", 0);
-		chooser.addDefault("Middle", 1);
-		chooser.addObject("Right", 2);
-		chooser.addObject("Baseline", 3);
-
-		// Get game data
-		double start = System.currentTimeMillis();
-
-		String gameData;
-		do
-			gameData = DriverStation.getInstance().getGameSpecificMessage();
-		while (gameData.length() == 0 && System.currentTimeMillis() - start < 2000);
-		if (gameData.length() == 0)
-			gameData = "L";
-		
-		robot_position = chooser.getSelected();
-
-		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
-		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
-
 		auto_chooser = new SendableChooser<Command>();
-		auto_chooser.addDefault("Baseline", new BaseLineAuto());
-		auto_chooser.addObject("Switch", new SwitchAuto(robot_position, switch_position));
-		auto_chooser.addObject("Scale", new ScaleAuto(robot_position, scale_position));
-		auto_chooser.addObject("Timed", new TimedAutoRoutine(robot_position, switch_position));
-		auto_chooser.addObject("Test", new TestAuto());
-
-		SmartDashboard.putData("Robot Position", chooser);
-		SmartDashboard.putData("Autonomous Command", auto_chooser);
-		SmartDashboard.putString("Game Data", DriverStation.getInstance().getGameSpecificMessage());
+		
+		chooser.addDefault("Left", 0);
+		chooser.addObject("Middle", 1);
+		chooser.addObject("Right", 2);
 	}
 
 	/**
-	 * This function is called once each time the robot enters Disabled mode.
-	 * You can use it to reset any subsystem information you want to clear when
-	 * the robot is disabled.
+	 * This function is called once each time the robot enters Disabled mode. You
+	 * can use it to reset any subsystem information you want to clear when the
+	 * robot is disabled.
 	 */
 
 	public void disabledInit() {
-		chassis.imu.calibrate();
-		chassis.imu.reset();
+		imu.calibrate();
+		imu.reset();
 	}
 
 	@Override
@@ -129,9 +108,9 @@ public class Robot extends IterativeRobot {
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
+	 * chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
+	 * Dashboard, remove all of the chooser code and uncomment the getString code
+	 * to get the auto name from the text box below the Gyro
 	 *
 	 * You can add additional auto modes by adding additional commands to the
 	 * chooser code above (like the commented example) or additional comparisons
@@ -139,7 +118,36 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousInit() {
-		autonomousCommand = auto_chooser.getSelected();
+
+		// Get game data
+		double start = System.currentTimeMillis();
+
+		String gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
+		if (gameData.length() < 2)
+			gameData = "LLL";
+
+		robot_position = chooser.getSelected();
+		
+		//hardcoding is best coding
+		
+		robot_position = 2;
+
+		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
+		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
+
+		
+		auto_chooser.addObject("Baseline", new BaseLineAuto());
+		auto_chooser.addObject("Switch", new SwitchAuto(robot_position, switch_position));
+		auto_chooser.addObject("Scale", new ScaleAuto(robot_position, scale_position));
+		auto_chooser.addDefault("Test", new TestAuto());
+		
+		//autonomousCommand = new SwitchAuto(robot_position, switch_position);
+		autonomousCommand = new TestAuto();
+
+		SmartDashboard.putData("Robot Position", chooser);
+		SmartDashboard.putData("Autonomous Command", auto_chooser);
+		SmartDashboard.putString("Game Data", DriverStation.getInstance().getGameSpecificMessage());
 		autonomousCommand.start();
 	}
 
@@ -151,7 +159,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		robotDrive.start();
-		chassis.imu.reset();
+		imu.reset();
 	}
 
 	/**
@@ -159,8 +167,9 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void teleopPeriodic() {
+		led.check_reset();
 		led.emote();
-		SmartDashboard.putNumber("CURRENT ANGLE", chassis.imu.getAngleZ());
+		SmartDashboard.putNumber("CURRENT ANGLE", imu.getAngleZ());
 		Scheduler.getInstance().run();
 	}
 

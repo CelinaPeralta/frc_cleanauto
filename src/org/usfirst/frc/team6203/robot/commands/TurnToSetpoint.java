@@ -13,7 +13,7 @@ public class TurnToSetpoint extends Command {
 	double target;
 
 	double rotationSpeed;
-	final double initialRotationSpeed = 0.6;
+	final double initialRotationSpeed = 0.8;
 	final double kP = 0.00003;
 	final double kI = 0.00003;
 	final double kD = 0.00003;
@@ -36,27 +36,27 @@ public class TurnToSetpoint extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		Robot.chassis.imu.reset();
-		setTimeout(3.0);
+		Robot.imu.reset();
+		//setTimeout(10);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		current = Robot.chassis.imu.getAngleZ();
+		current = Robot.imu.getAngleZ();
 		error = Math.abs(target - current); // maybe not abs
 
 		// look at this jank ass code
-		if (target > 180)
-			Robot.chassis.tankDrive(-rotationSpeed, rotationSpeed);
-		else
-			Robot.chassis.tankDrive(rotationSpeed, -rotationSpeed);
-		
-//		if (target < 0)
+//		if (target > 180)
 //			Robot.chassis.tankDrive(-rotationSpeed, rotationSpeed);
 //		else
 //			Robot.chassis.tankDrive(rotationSpeed, -rotationSpeed);
+		
+		if (target < 0)
+			Robot.chassis.tankDrive(rotationSpeed, -rotationSpeed);
+		else
+			Robot.chassis.tankDrive(-rotationSpeed, rotationSpeed);
 
-		SmartDashboard.putNumber("AngleZ", Robot.chassis.imu.getAngleZ());
+		SmartDashboard.putNumber("AngleZ", Robot.imu.getAngleZ());
 		SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
 
 		previous_error = error;
@@ -75,13 +75,13 @@ public class TurnToSetpoint extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return Math.abs(Robot.chassis.imu.getAngleZ() - target) < 1.5 || isTimedOut();
+		return Math.abs(Robot.imu.getAngleZ() - target) < 1.5 || isTimedOut();
 	}
 
 	// Called once after isFinished returns true
 	protected void end() {
 		Robot.chassis.tankDrive(0, 0);
-		Robot.chassis.imu.reset();
+		Robot.imu.reset();
 	}
 
 	// Called when another command which requires one or more of the same

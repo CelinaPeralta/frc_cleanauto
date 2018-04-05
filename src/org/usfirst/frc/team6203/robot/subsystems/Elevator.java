@@ -23,6 +23,7 @@ public class Elevator extends Subsystem {
 
 	public Elevator() {
 		elevatorMotor = new Victor(RobotMap.elevatorMotor);
+		elevatorMotor.setInverted(true);
 
 		// Instantiate limit switches
 		DI_bottom = new DigitalInput(RobotMap.DI_bottom);

@@ -1,6 +1,7 @@
 package org.usfirst.frc.team6203.robot.subsystems;
 
 import org.usfirst.frc.team6203.robot.OI;
+import org.usfirst.frc.team6203.robot.Robot;
 import org.usfirst.frc.team6203.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -14,7 +15,7 @@ public class Chassis extends Subsystem {
 	public SpeedControllerGroup m_left, m_right;
 	public DifferentialDrive drive;
 	public Victor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
-	public ADIS16448_IMU imu;
+	
 
 	private final double kAngleSetpoint = 0.0;
 
@@ -30,7 +31,7 @@ public class Chassis extends Subsystem {
 		m_left.setInverted(true);
 		m_right.setInverted(true);
 
-		imu = new ADIS16448_IMU();
+	
 
 		drive = new DifferentialDrive(m_left, m_right);
 	}
@@ -40,11 +41,11 @@ public class Chassis extends Subsystem {
 
 	public void tankDrive(double a, double b) {
 		SmartDashboard.putString("type", "tank");
-		drive.tankDrive(a * 0.5, b * 0.5);
+		drive.tankDrive(a, b);
 	}
 
 	public void driveStraight(double speed) {
-		double turningValue = (kAngleSetpoint - imu.getAngle());
+		double turningValue = (kAngleSetpoint - Robot.imu.getAngle());
 		turningValue = Math.copySign(turningValue, -speed); 
 
 		drive.arcadeDrive(speed, turningValue);

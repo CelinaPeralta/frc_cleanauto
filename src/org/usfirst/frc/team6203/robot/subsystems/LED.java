@@ -1,19 +1,22 @@
 package org.usfirst.frc.team6203.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-
 import org.usfirst.frc.team6203.robot.OI;
 import org.usfirst.frc.team6203.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LED extends Subsystem {
 
 	I2C p;
+	DigitalOutput rst;
 	byte[] prev = { -1 };
 
 	public LED() {
 		p = new I2C(I2C.Port.kOnboard, 9);
+		rst = new DigitalOutput(3);
 	}
 
 	public void set(byte[] data) {
@@ -65,5 +68,11 @@ public class LED extends Subsystem {
 	public void text() {
 		byte[] data = { 1, 2 };
 		set(data);
+	}
+	
+	public void check_reset(){
+		rst.set(!OI.driverStick.getRawButton(7));	
+		SmartDashboard.putBoolean("pressed thing", OI.driverStick.getRawButton(7));
+//		SmartDashboard.putNumber("pressed test thing", System.currentTimeMillis()%1000);
 	}
 }
