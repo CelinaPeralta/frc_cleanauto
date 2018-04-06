@@ -43,7 +43,7 @@ public class Chassis extends Subsystem {
 		
 		if (Robot.pdp.getCurrent(12) > 100 || Robot.pdp.getCurrent(13) > 100)
 			drive.stopMotor();
-		else 
+		else
 			drive.tankDrive(a, b);
 	}
 

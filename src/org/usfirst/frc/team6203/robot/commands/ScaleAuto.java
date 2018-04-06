@@ -9,7 +9,7 @@ public class ScaleAuto extends CommandGroup {
 
 	public ScaleAuto(int robot_position, int scale_position) {
 		if (robot_position == scale_position) {
-			addSequential(new DriveToTimeout(0.8, 0.8, 2.0));
+			addSequential(new DriveToTimeout(0.8, 0.8, 2.5));
 			addSequential(new DriveAndRaiseElevator(0.4, 6.0, 0.5, 5.0));
 			addSequential(new Wait(0.5));
 			addSequential(new TurnToSetpoint(scale_position == 0 ? 30 : -30));
