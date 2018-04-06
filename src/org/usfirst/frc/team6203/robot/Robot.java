@@ -2,10 +2,8 @@ package org.usfirst.frc.team6203.robot;
 
 import org.usfirst.frc.team6203.robot.commands.BaseLineAuto;
 import org.usfirst.frc.team6203.robot.commands.RobotDrive;
-import org.usfirst.frc.team6203.robot.commands.ScaleAuto;
 import org.usfirst.frc.team6203.robot.commands.SwitchAuto;
 import org.usfirst.frc.team6203.robot.commands.TestAuto;
-import org.usfirst.frc.team6203.robot.commands.TimedAutoRoutine;
 import org.usfirst.frc.team6203.robot.subsystems.ADIS16448_IMU;
 import org.usfirst.frc.team6203.robot.subsystems.Chassis;
 import org.usfirst.frc.team6203.robot.subsystems.Elevator;
@@ -43,9 +41,9 @@ public class Robot extends IterativeRobot {
 
 	public static LED led;
 
-	int robot_position;
-	int switch_position;
-	int scale_position;
+	public static int robot_position;
+	public static int switch_position;
+	public static int scale_position;
 	boolean fdisable = false;
 
 	public static PowerDistributionPanel pdp;
@@ -53,6 +51,7 @@ public class Robot extends IterativeRobot {
 	Command autonomousCommand;
 	SendableChooser<Integer> chooser;
 	SendableChooser<Command> auto_chooser;
+	String gameData;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -81,7 +80,15 @@ public class Robot extends IterativeRobot {
 
 		chooser = new SendableChooser<Integer>();
 		auto_chooser = new SendableChooser<Command>();
-		
+
+		auto_chooser.addObject("Baseline", new BaseLineAuto());
+		auto_chooser.addObject("Switch", new SwitchAuto());
+		//auto_chooser.addObject("Scale", new ScaleAuto());
+		auto_chooser.addDefault("Test", new TestAuto());
+
+		SmartDashboard.putData("Robot Position", chooser);
+		SmartDashboard.putData("Autonomous Command", auto_chooser);
+
 		chooser.addDefault("Left", 0);
 		chooser.addObject("Middle", 1);
 		chooser.addObject("Right", 2);
@@ -101,7 +108,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		led.pong_or_gg();
-
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		SmartDashboard.putString("Disabled Data", gameData);
+		
 		Scheduler.getInstance().run();
 	}
 
@@ -122,27 +131,20 @@ public class Robot extends IterativeRobot {
 		// Get game data
 		double start = System.currentTimeMillis();
 
-		String gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+
 		if (gameData.length() < 2)
 			gameData = "LLL";
+		
+		SmartDashboard.putString("AutoInit Data", gameData);
 
 		robot_position = chooser.getSelected();
 
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
+		
+		System.out.println("SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
 
-		auto_chooser.addObject("Baseline", new BaseLineAuto());
-		auto_chooser.addObject("Switch", new SwitchAuto(robot_position, switch_position));
-		auto_chooser.addObject("Scale", new ScaleAuto(robot_position, scale_position));
-		auto_chooser.addDefault("Test", new TestAuto(robot_position, switch_position));
-		
-		System.out.println("SWITCH, ROBOT = "+switch_position+"("+gameData+"), "+robot_position);
-		
-		SmartDashboard.putData("Robot Position", chooser);
-		SmartDashboard.putData("Autonomous Command", auto_chooser);
-		SmartDashboard.putString("Game Data", DriverStation.getInstance().getGameSpecificMessage());
-		
 		autonomousCommand = auto_chooser.getSelected();
 		autonomousCommand.start();
 	}

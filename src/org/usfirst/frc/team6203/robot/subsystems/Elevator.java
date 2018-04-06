@@ -8,6 +8,7 @@ import org.usfirst.frc.team6203.robot.RobotMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -51,6 +52,8 @@ public class Elevator extends Subsystem {
 	}
 
 	public void drive() {
+		
+		SmartDashboard.putNumber("Elevator Current", Robot.pdp.getCurrent(2));
 		
 		if (Robot.pdp.getCurrent(2) > 50) {
 			elevatorMotor.stopMotor();

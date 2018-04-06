@@ -15,7 +15,6 @@ public class Chassis extends Subsystem {
 	public SpeedControllerGroup m_left, m_right;
 	public DifferentialDrive drive;
 	public Victor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
-	
 
 	private final double kAngleSetpoint = 0.0;
 
@@ -31,8 +30,6 @@ public class Chassis extends Subsystem {
 		m_left.setInverted(true);
 		m_right.setInverted(true);
 
-	
-
 		drive = new DifferentialDrive(m_left, m_right);
 	}
 
@@ -40,17 +37,15 @@ public class Chassis extends Subsystem {
 	}
 
 	public void tankDrive(double a, double b) {
-		SmartDashboard.putString("type", "tank");
-		drive.tankDrive(a, b);
+		
+		SmartDashboard.putNumber("PDP 12 Current", Robot.pdp.getCurrent(12));
+		SmartDashboard.putNumber("PDP 13 Current", Robot.pdp.getCurrent(13));
+		
+		if (Robot.pdp.getCurrent(12) > 100 || Robot.pdp.getCurrent(13) > 100)
+			drive.stopMotor();
+		else 
+			drive.tankDrive(a, b);
 	}
-
-	public void driveStraight(double speed) {
-		double turningValue = (kAngleSetpoint - Robot.imu.getAngle());
-		turningValue = Math.copySign(turningValue, -speed); 
-
-		drive.arcadeDrive(speed, turningValue);
-	}
-
 
 	public void arcadeDrive() {
 		double xspeed = OI.driverStick.getX();
