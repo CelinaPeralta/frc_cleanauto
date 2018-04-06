@@ -37,7 +37,7 @@ public class TurnToSetpoint extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		Robot.imu.reset();
-		//setTimeout(10);
+		setTimeout(3);
 	}
 
 	// Called repeatedly when this Command is scheduled to run

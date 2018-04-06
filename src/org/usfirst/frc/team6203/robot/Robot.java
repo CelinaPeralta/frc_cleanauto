@@ -1,20 +1,22 @@
 package org.usfirst.frc.team6203.robot;
 
 import org.usfirst.frc.team6203.robot.commands.BaseLineAuto;
+import org.usfirst.frc.team6203.robot.commands.CenterSwitchAuto;
 import org.usfirst.frc.team6203.robot.commands.RobotDrive;
-import org.usfirst.frc.team6203.robot.commands.SwitchAuto;
+import org.usfirst.frc.team6203.robot.commands.SameScaleAuto;
+import org.usfirst.frc.team6203.robot.commands.SameSwitchAuto;
 import org.usfirst.frc.team6203.robot.commands.TestAuto;
+import org.usfirst.frc.team6203.robot.commands.WrongScaleAuto;
+import org.usfirst.frc.team6203.robot.commands.WrongSwitchAuto;
 import org.usfirst.frc.team6203.robot.subsystems.ADIS16448_IMU;
 import org.usfirst.frc.team6203.robot.subsystems.Chassis;
 import org.usfirst.frc.team6203.robot.subsystems.Elevator;
 import org.usfirst.frc.team6203.robot.subsystems.Intake;
 import org.usfirst.frc.team6203.robot.subsystems.LED;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -29,9 +31,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
+	public static boolean disable_all = false;
+
 	public static OI oi;
 
-	public static CameraServer usbCam;
+	//public static CameraServer usbCam;
 
 	public static Chassis chassis;
 	public static Intake intake;
@@ -49,9 +53,9 @@ public class Robot extends IterativeRobot {
 
 	public static PowerDistributionPanel pdp;
 
-	Command autonomousCommand;
+	String autonomousCommand;
 	SendableChooser<Integer> chooser;
-	SendableChooser<Command> auto_chooser;
+	SendableChooser<String> auto_chooser;
 	String gameData;
 
 	/**
@@ -71,8 +75,8 @@ public class Robot extends IterativeRobot {
 
 		led = new LED();
 
-		usbCam = CameraServer.getInstance();
-		usbCam.startAutomaticCapture();
+		//usbCam = CameraServer.getInstance();
+		//usbCam.startAutomaticCapture();
 
 		pdp = new PowerDistributionPanel();
 		pdp.clearStickyFaults();
@@ -80,12 +84,13 @@ public class Robot extends IterativeRobot {
 		imu.calibrate();
 
 		chooser = new SendableChooser<Integer>();
-		auto_chooser = new SendableChooser<Command>();
+		auto_chooser = new SendableChooser<String>();
 
-		auto_chooser.addObject("Baseline", new BaseLineAuto());
-		auto_chooser.addDefault("Switch", new SwitchAuto());
-		//auto_chooser.addObject("Scale", new ScaleAuto());
-		auto_chooser.addDefault("Test", new TestAuto());
+		auto_chooser.addDefault("Baseline", "baseline");
+		auto_chooser.addObject("Switch", "switch");
+		auto_chooser.addObject("Scale", "scale");
+		auto_chooser.addObject("Switch and Scale", "both");
+		auto_chooser.addObject("Test", "test");
 
 		SmartDashboard.putData("Robot Position", chooser);
 		SmartDashboard.putData("Autonomous Command", auto_chooser);
@@ -109,9 +114,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-
 		led.pong_or_gg();
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		SmartDashboard.putString("Disabled Data", gameData);
 
 		Scheduler.getInstance().run();
@@ -147,7 +150,62 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("lmao", "SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
 
 		autonomousCommand = auto_chooser.getSelected();
-		autonomousCommand.start();
+		SmartDashboard.putString("auto", autonomousCommand);
+
+		System.out.println("auto selected = " + autonomousCommand);
+
+		if (autonomousCommand.equals("switch")) {
+			if (switch_position == robot_position) {
+				SameSwitchAuto command = new SameSwitchAuto();
+				command.start();
+			} else if (robot_position == 1) {
+				CenterSwitchAuto command = new CenterSwitchAuto();
+				command.start();
+			} else if (switch_position != robot_position) {
+				WrongSwitchAuto command = new WrongSwitchAuto();
+				command.start();
+			} else {
+				BaseLineAuto command = new BaseLineAuto();
+				command.start();
+			}
+
+		} else if (autonomousCommand.equals("baseline")) {
+			BaseLineAuto command = new BaseLineAuto();
+			command.start();
+		} else if (autonomousCommand.equals("test")) {
+			TestAuto command = new TestAuto();
+			command.start();
+		} else if (autonomousCommand.equals("scale")) {
+			if (robot_position == scale_position) {
+				SameScaleAuto command = new SameScaleAuto();
+				command.start();
+			} else if (robot_position != 1) { //;)
+//				WrongScaleAuto command = new WrongScaleAuto();
+//				command.start();
+				BaseLineAuto command = new BaseLineAuto();
+				command.start();
+			} else {
+				BaseLineAuto command = new BaseLineAuto();
+				command.start();
+			}
+		} else if (autonomousCommand.equals("both")){
+			
+			if (robot_position == scale_position) {
+				SameScaleAuto command = new SameScaleAuto();
+				command.start();
+			} else if (robot_position == switch_position){
+				SameSwitchAuto command = new SameSwitchAuto();
+				command.start();
+			}else{
+				BaseLineAuto command = new BaseLineAuto();
+				command.start();
+			}
+			
+			
+		}else{
+			BaseLineAuto command = new BaseLineAuto();
+			command.start();
+		}
 	}
 
 	public void autonomousPeriodic() {

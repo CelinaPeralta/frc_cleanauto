@@ -25,7 +25,7 @@ public class Elevator extends Subsystem {
 
 	public Elevator() {
 		elevatorMotor = new Victor(RobotMap.elevatorMotor);
-		elevatorMotor.setInverted(true);
+		elevatorMotor.setInverted(false);
 
 		// Instantiate limit switches
 		DI_bottom = new DigitalInput(RobotMap.DI_bottom);
@@ -52,6 +52,8 @@ public class Elevator extends Subsystem {
 	}
 
 	public void drive() {
+		if (Robot.disable_all) return;
+		
 	
 		SmartDashboard.putNumber("Elevator Current", Robot.pdp.getCurrent(2));
 		
@@ -100,6 +102,8 @@ public class Elevator extends Subsystem {
 
 
 	public void setElevator(double speed) {
+		if (Robot.disable_all) return;
+		
 
 		if (b_bottom && speed < 0)
 			return;

@@ -37,6 +37,7 @@ public class Chassis extends Subsystem {
 	}
 
 	public void tankDrive(double a, double b) {
+		if (Robot.disable_all) return;
 		
 		SmartDashboard.putNumber("PDP 12 Current", Robot.pdp.getCurrent(12));
 		SmartDashboard.putNumber("PDP 13 Current", Robot.pdp.getCurrent(13));
@@ -48,6 +49,8 @@ public class Chassis extends Subsystem {
 	}
 
 	public void arcadeDrive() {
+		if (Robot.disable_all) return;
+		
 		double xspeed = OI.driverStick.getX();
 		double yspeed = OI.driverStick.getY();
 

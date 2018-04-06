@@ -2,6 +2,7 @@ package org.usfirst.frc.team6203.robot.subsystems;
 
 import org.usfirst.frc.team6203.robot.Constants;
 import org.usfirst.frc.team6203.robot.OI;
+import org.usfirst.frc.team6203.robot.Robot;
 import org.usfirst.frc.team6203.robot.RobotMap;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Victor;
@@ -30,11 +31,15 @@ public class Intake extends Subsystem {
 	}
 
 	public void setIntakeSpeed(double speed) {
+		if (Robot.disable_all) return;
+		
 		m_intakeMotorM.set(speed);
 		m_intakeMotorS.set(speed);
 	}
 
 	public void drive() {
+		if (Robot.disable_all) return;
+		
 		boolean right = OI.elevatorStick.getRawButton(1);
 		
 		if (right) {

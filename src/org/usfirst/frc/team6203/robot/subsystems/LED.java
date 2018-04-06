@@ -83,7 +83,8 @@ public class LED extends Subsystem {
 	}
 	
 	public void check_keyboard(){
-		keyboard_mode = OI.VStick2.getRawButton(13);
+		System.out.println("check keyboard " + keyboard_mode + " | " + keyboard_input_mode);
+		keyboard_input_mode = OI.VStick2.getRawButton(13);
 		
 		boolean tmp = OI.VStick2.getRawButton(12);
 		
