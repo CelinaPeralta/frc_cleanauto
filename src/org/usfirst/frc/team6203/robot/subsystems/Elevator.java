@@ -2,6 +2,7 @@ package org.usfirst.frc.team6203.robot.subsystems;
 
 import org.usfirst.frc.team6203.robot.Constants;
 import org.usfirst.frc.team6203.robot.OI;
+import org.usfirst.frc.team6203.robot.Robot;
 import org.usfirst.frc.team6203.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -50,6 +51,12 @@ public class Elevator extends Subsystem {
 	}
 
 	public void drive() {
+		
+		if (Robot.pdp.getCurrent(2) > 50) {
+			elevatorMotor.stopMotor();
+			return;
+		}
+		
 		updateButtons();
 
 		if (b_switch)
@@ -87,6 +94,7 @@ public class Elevator extends Subsystem {
 
 		elevatorMotor.set(x);
 	}
+
 
 	public void setElevator(double speed) {
 

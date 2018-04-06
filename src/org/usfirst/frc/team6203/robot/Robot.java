@@ -48,7 +48,7 @@ public class Robot extends IterativeRobot {
 	int scale_position;
 	boolean fdisable = false;
 
-	PowerDistributionPanel pdp;
+	public static PowerDistributionPanel pdp;
 
 	Command autonomousCommand;
 	SendableChooser<Integer> chooser;
