@@ -55,8 +55,8 @@ public class Robot extends IterativeRobot {
 	String gameData;
 
 	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
+	 * This function is run when the robot is first started up and should be used
+	 * for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
 		auto_chooser = new SendableChooser<Command>();
 
 		auto_chooser.addObject("Baseline", new BaseLineAuto());
-		auto_chooser.addObject("Switch", new SwitchAuto());
+		auto_chooser.addDefault("Switch", new SwitchAuto());
 		//auto_chooser.addObject("Scale", new ScaleAuto());
 		auto_chooser.addDefault("Test", new TestAuto());
 
@@ -96,9 +96,9 @@ public class Robot extends IterativeRobot {
 	}
 
 	/**
-	 * This function is called once each time the robot enters Disabled mode.
-	 * You can use it to reset any subsystem information you want to clear when
-	 * the robot is disabled.
+	 * This function is called once each time the robot enters Disabled mode. You
+	 * can use it to reset any subsystem information you want to clear when the
+	 * robot is disabled.
 	 */
 
 	public void disabledInit() {
@@ -113,16 +113,16 @@ public class Robot extends IterativeRobot {
 		led.pong_or_gg();
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		SmartDashboard.putString("Disabled Data", gameData);
-		
+
 		Scheduler.getInstance().run();
 	}
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
+	 * chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
+	 * Dashboard, remove all of the chooser code and uncomment the getString code
+	 * to get the auto name from the text box below the Gyro
 	 *
 	 * You can add additional auto modes by adding additional commands to the
 	 * chooser code above (like the commented example) or additional comparisons
@@ -135,15 +135,16 @@ public class Robot extends IterativeRobot {
 		// Get game data
 		if (gameData.length() < 2)
 			gameData = "LLL";
-		
+
 		SmartDashboard.putString("AutoInit Data", gameData);
 
 		robot_position = chooser.getSelected();
 
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
-		
+
 		System.out.println("SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
+		SmartDashboard.putString("lmao", "SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
 
 		autonomousCommand = auto_chooser.getSelected();
 		autonomousCommand.start();
@@ -169,6 +170,10 @@ public class Robot extends IterativeRobot {
 		led.check_keyboard();
 		led.emote();
 		SmartDashboard.putNumber("CURRENT ANGLE", imu.getAngleZ());
+		SmartDashboard.putNumber("PDP 0", pdp.getCurrent(0));
+		SmartDashboard.putNumber("PDP 12", pdp.getCurrent(12));
+		SmartDashboard.putNumber("PDP 13", pdp.getCurrent(13));
+		SmartDashboard.putNumber("PDP 14", pdp.getCurrent(14));
 		Scheduler.getInstance().run();
 	}
 
