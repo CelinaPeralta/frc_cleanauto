@@ -135,7 +135,9 @@ public class Robot extends IterativeRobot {
 		auto_chooser.addObject("Baseline", new BaseLineAuto());
 		auto_chooser.addObject("Switch", new SwitchAuto(robot_position, switch_position));
 		auto_chooser.addObject("Scale", new ScaleAuto(robot_position, scale_position));
-		auto_chooser.addDefault("Test", new TestAuto());
+		auto_chooser.addDefault("Test", new TestAuto(robot_position, switch_position));
+		
+		System.out.println("SWITCH, ROBOT = "+switch_position+"("+gameData+"), "+robot_position);
 		
 		SmartDashboard.putData("Robot Position", chooser);
 		SmartDashboard.putData("Autonomous Command", auto_chooser);

@@ -6,20 +6,29 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  */
 public class TestAuto extends CommandGroup {
-	
-	private double delay = 0.5;
-	int switch_position = 0;
 
-	public TestAuto() {
-//		addSequential(new DriveAndRaiseElevator(0.8, 3.0, 0.5, 2.5));
-//		addSequential(new Wait(delay));
-		addSequential(new TurnToSetpoint(-90));
-		addSequential(new Wait(2));
-		addSequential(new TurnToSetpoint(90));
-//		addSequential(new Wait(delay));
-//		addSequential(new DriveToTimeout(0.4, 0.4, 1.0));
-//		addSequential(new Wait(delay));
-//		addSequential(new SetIntake(-0.4, 0.75));
-//		addSequential(new DriveToTimeout(-0.25, -0.25, 1.0));
+	private double delay = 0.5;
+
+	public TestAuto(int robot_position, int switch_position) {
+		if (robot_position == 1) {
+			//lord have mercy
+			addSequential(new TurnToSetpoint(switch_position == 0 ? -45 : 45));
+			addSequential(new Wait(delay));
+			addSequential(new DriveToTimeout(0.8, 0.8, .4));
+			addSequential(new Wait(delay));
+			addSequential(new TurnToSetpoint(switch_position == 0 ? 45 : -45));
+			addSequential(new Wait(delay));
+			addSequential(new DriveToTimeout(0.6, 0.6, 2));
+			addSequential(new Wait(delay));
+		} else if (robot_position == switch_position) {
+			addSequential(new DriveToTimeout(0.8, 0.8, 1));
+			addSequential(new Wait(delay));
+			addSequential(new TurnToSetpoint(switch_position == 0 ? 90 : -90));
+			addSequential(new Wait(delay));
+			addSequential(new DriveToTimeout(0.6, 0.6, 2));
+			addSequential(new Wait(delay));
+		} else {
+			addSequential(new BaseLineAuto());
+		}
 	}
 }
