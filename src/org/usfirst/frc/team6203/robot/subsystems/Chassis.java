@@ -44,14 +44,6 @@ public class Chassis extends Subsystem {
 		drive.tankDrive(a, b);
 	}
 
-	public void driveStraight(double speed) {
-		double turningValue = (kAngleSetpoint - Robot.imu.getAngle());
-		turningValue = Math.copySign(turningValue, -speed); 
-
-		drive.arcadeDrive(speed, turningValue);
-	}
-
-
 	public void arcadeDrive() {
 		double xspeed = OI.driverStick.getX();
 		double yspeed = OI.driverStick.getY();
