@@ -128,26 +128,20 @@ public class Robot extends IterativeRobot {
 			gameData = "LLL";
 
 		robot_position = chooser.getSelected();
-		
-		//hardcoding is best coding
-		
-		robot_position = 2;
 
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
 
-		
 		auto_chooser.addObject("Baseline", new BaseLineAuto());
 		auto_chooser.addObject("Switch", new SwitchAuto(robot_position, switch_position));
 		auto_chooser.addObject("Scale", new ScaleAuto(robot_position, scale_position));
 		auto_chooser.addDefault("Test", new TestAuto());
 		
-		//autonomousCommand = new SwitchAuto(robot_position, switch_position);
-		autonomousCommand = new TestAuto();
-
 		SmartDashboard.putData("Robot Position", chooser);
 		SmartDashboard.putData("Autonomous Command", auto_chooser);
 		SmartDashboard.putString("Game Data", DriverStation.getInstance().getGameSpecificMessage());
+		
+		autonomousCommand = auto_chooser.getSelected();
 		autonomousCommand.start();
 	}
 
@@ -168,6 +162,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		led.check_reset();
+		led.check_keyboard();
 		led.emote();
 		SmartDashboard.putNumber("CURRENT ANGLE", imu.getAngleZ());
 		Scheduler.getInstance().run();

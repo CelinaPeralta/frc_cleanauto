@@ -26,6 +26,8 @@ public class RobotMap {
 	public static int controller = 0;
 	public static int controller2 = 1;
 	public static int controller3 = 2;
+	public static int controller4 = 3;
+	public static int controller5 = 4;
 	public static int slowspeed = 2;
 	
 	public static int left_encoder_channelA = 0;

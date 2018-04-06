@@ -14,6 +14,10 @@ public class LED extends Subsystem {
 	DigitalOutput rst;
 	byte[] prev = { -1 };
 
+	boolean keyboard_mode = false;
+	boolean keyboard_input_mode = false;
+	String s = "";
+
 	public LED() {
 		p = new I2C(I2C.Port.kOnboard, 9);
 		rst = new DigitalOutput(3);
@@ -50,6 +54,8 @@ public class LED extends Subsystem {
 	}
 
 	public void emote() {
+		if (keyboard_mode && !s.equals("")) return;
+		
 		byte x = getEmote();
 		byte[] data = { 1, 0, x };
 		set(data);
@@ -75,4 +81,48 @@ public class LED extends Subsystem {
 		SmartDashboard.putBoolean("pressed thing", OI.driverStick.getRawButton(7));
 //		SmartDashboard.putNumber("pressed test thing", System.currentTimeMillis()%1000);
 	}
+	
+	public void check_keyboard(){
+		keyboard_mode = OI.VStick2.getRawButton(13);
+		
+		boolean tmp = OI.VStick2.getRawButton(12);
+		
+		if (keyboard_input_mode && !tmp){
+			//just finished input
+			System.out.println("final = " + s);
+			s = "";
+		}else if (keyboard_input_mode){
+			//still inputting
+
+			for (int i=1;i<=16;i++){
+				if (OI.VStick1.getRawButtonPressed(i))
+					s += (char)(i-1+(int)'a');
+			}
+
+			for (int i=1;i<=10;i++){
+				if (OI.VStick2.getRawButtonPressed(i))
+					s += (char)(i+15+(int)'a');
+			}
+
+			if (OI.VStick2.getRawButtonPressed(11))
+				s += " ";
+		}
+		
+		keyboard_input_mode = tmp;
+
+		if (keyboard_mode) update_keyboard();
+	}
+	
+	public void update_keyboard(){
+		if (s.equals("")) return;
+
+		byte[] data = new byte[s.length() + 1];
+		data[0] = 2;
+		
+		for (int i=0;i<s.length();i++)
+			data[i+1] = (byte) s.charAt(i); 
+		
+		set(data);
+	}
+
 }

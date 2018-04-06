@@ -14,22 +14,25 @@ public class SwitchAuto extends CommandGroup {
 			//lord have mercy
 			addSequential(new TurnToSetpoint(switch_position == 0 ? -45 : 45));
 			addSequential(new Wait(delay));
-			addSequential(new DriveAndRaiseElevator(0.6, 3.0, 0.5, 1));
+			addSequential(new DriveToTimeout(0.8, 0.8, .4));
+//			addSequential(new DriveAndRaiseElevator(0.6, 3.0, 0.5, 1));
+			addSequential(new Wait(0.1));
+			addSequential(new SetElevator(0.5, 3.5));
 			addSequential(new Wait(delay));
 			addSequential(new TurnToSetpoint(switch_position == 0 ? 45 : -45));
 			addSequential(new Wait(delay));
-			addSequential(new DriveToTimeout(0.4, 0.4, 1.25));
+			addSequential(new DriveToTimeout(0.6, 0.6, 2));
 			addSequential(new Wait(delay));
 			addSequential(new SetIntake(-0.4, 0.75));
 			//addSequential(new DriveToTimeout(-0.25, -0.25, 1.0));
 		} else if (robot_position == switch_position) {
-			addSequential(new DriveToTimeout(0.8, 0.8, 1.1));
+			addSequential(new DriveToTimeout(0.8, 0.8, 1));
 			addSequential(new Wait(0.1));
 			addSequential(new SetElevator(0.5, 3.5));
 			addSequential(new Wait(delay));
 			addSequential(new TurnToSetpoint(switch_position == 0 ? 90 : -90));
 			addSequential(new Wait(delay));
-			addParallel(new DriveToTimeout(0.4, 0.4, 1.5));
+			addSequential(new DriveToTimeout(0.6, 0.6, 2));
 			addSequential(new Wait(delay));
 			addSequential(new SetIntake(-0.4, 0.75));
 			//addSequential(new DriveToTimeout(-0.25, -0.25, 1.0));
