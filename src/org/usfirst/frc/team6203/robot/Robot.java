@@ -216,7 +216,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		robotDrive.start();
-		imu.reset();
+//		imu.reset();
 	}
 
 	/**
