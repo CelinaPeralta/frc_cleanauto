@@ -17,6 +17,7 @@ import org.usfirst.frc.team6203.robot.subsystems.LED;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -109,7 +110,10 @@ public class Robot extends IterativeRobot {
 	public void disabledInit() {
 		imu.calibrate();
 		imu.reset();
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
+
+	Command command;
 
 	@Override
 	public void disabledPeriodic() {
@@ -146,66 +150,49 @@ public class Robot extends IterativeRobot {
 		switch_position = gameData.charAt(0) == 'L' ? 0 : 2;
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
 
-		System.out.println("SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
-		SmartDashboard.putString("lmao", "SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
-
-		autonomousCommand = auto_chooser.getSelected();
-		SmartDashboard.putString("auto", autonomousCommand);
-
-		System.out.println("auto selected = " + autonomousCommand);
-
 		if (autonomousCommand.equals("switch")) {
 			if (switch_position == robot_position) {
-				SameSwitchAuto command = new SameSwitchAuto();
-				command.start();
+				command = new SameSwitchAuto();
 			} else if (robot_position == 1) {
-				CenterSwitchAuto command = new CenterSwitchAuto();
-				command.start();
+				command = new CenterSwitchAuto();
+
 			} else if (switch_position != robot_position) {
-				WrongSwitchAuto command = new WrongSwitchAuto();
-				command.start();
+				command = new WrongSwitchAuto();
 			} else {
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new BaseLineAuto();
 			}
 
 		} else if (autonomousCommand.equals("baseline")) {
-			BaseLineAuto command = new BaseLineAuto();
-			command.start();
+			command = new BaseLineAuto();
 		} else if (autonomousCommand.equals("test")) {
-			TestAuto command = new TestAuto();
-			command.start();
+			command = new TestAuto();
 		} else if (autonomousCommand.equals("scale")) {
 			if (robot_position == scale_position) {
-				SameScaleAuto command = new SameScaleAuto();
-				command.start();
+				command = new SameScaleAuto();
 			} else if (robot_position != 1) { //;)
-//				WrongScaleAuto command = new WrongScaleAuto();
-//				command.start();
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				//				WrongScaleAuto command = new WrongScaleAuto();
+				//				command.start();
+				command = new BaseLineAuto();
 			} else {
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new BaseLineAuto();
 			}
-		} else if (autonomousCommand.equals("both")){
-			
+		} else if (autonomousCommand.equals("both")) {
+
 			if (robot_position == scale_position) {
-				SameScaleAuto command = new SameScaleAuto();
-				command.start();
-			} else if (robot_position == switch_position){
-				SameSwitchAuto command = new SameSwitchAuto();
-				command.start();
-			}else{
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new SameScaleAuto();
+			} else if (robot_position == switch_position) {
+				command = new SameSwitchAuto();
+			} else {
+				command = new BaseLineAuto();
 			}
-			
-			
-		}else{
-			BaseLineAuto command = new BaseLineAuto();
-			command.start();
+		} else {
+			command = new BaseLineAuto();
 		}
+
+		System.out.println("SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
+		SmartDashboard.putString("lmao", "SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
+		command.start();
+
 	}
 
 	public void autonomousPeriodic() {
@@ -216,11 +203,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		robotDrive.start();
-//		imu.reset();
 	}
 
 	/**
-	 * This function is called periodically during operator control
+	 * This function is called per -iodically during operator control
 	 */
 
 	public void teleopPeriodic() {

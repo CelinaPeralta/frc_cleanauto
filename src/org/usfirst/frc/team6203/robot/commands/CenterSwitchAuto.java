@@ -12,7 +12,7 @@ public class CenterSwitchAuto extends CommandGroup {
 	private double delay = 0.4;
 
 	public CenterSwitchAuto() {
-			addSequential(new DriveToTimeout(0.8, 0.8, .2));
+			addSequential(new DriveToTimeout(0.6, 0.6, .2));
 			addSequential(new Wait(.4));
 			addSequential(new TurnToSetpoint(Robot.switch_position == 0 ? -45 : 45));
 			addSequential(new Wait(1));
