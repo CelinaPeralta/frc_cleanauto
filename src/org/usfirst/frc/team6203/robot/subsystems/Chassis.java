@@ -16,8 +16,6 @@ public class Chassis extends Subsystem {
 	public DifferentialDrive drive;
 	public Victor leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor;
 
-	private final double kAngleSetpoint = 0.0;
-
 	public Chassis() {
 		leftFrontMotor = new Victor(RobotMap.leftMotorF);
 		rightFrontMotor = new Victor(RobotMap.rightMotorF);

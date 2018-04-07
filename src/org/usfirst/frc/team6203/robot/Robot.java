@@ -6,7 +6,6 @@ import org.usfirst.frc.team6203.robot.commands.RobotDrive;
 import org.usfirst.frc.team6203.robot.commands.SameScaleAuto;
 import org.usfirst.frc.team6203.robot.commands.SameSwitchAuto;
 import org.usfirst.frc.team6203.robot.commands.TestAuto;
-import org.usfirst.frc.team6203.robot.commands.WrongScaleAuto;
 import org.usfirst.frc.team6203.robot.commands.WrongSwitchAuto;
 import org.usfirst.frc.team6203.robot.subsystems.ADIS16448_IMU;
 import org.usfirst.frc.team6203.robot.subsystems.Chassis;
@@ -17,6 +16,7 @@ import org.usfirst.frc.team6203.robot.subsystems.LED;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot {
 
 	public static OI oi;
 
-	//public static CameraServer usbCam;
+	// public static CameraServer usbCam;
 
 	public static Chassis chassis;
 	public static Intake intake;
@@ -59,8 +59,8 @@ public class Robot extends IterativeRobot {
 	String gameData;
 
 	/**
-	 * This function is run when the robot is first started up and should be used
-	 * for any initialization code.
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
@@ -75,8 +75,8 @@ public class Robot extends IterativeRobot {
 
 		led = new LED();
 
-		//usbCam = CameraServer.getInstance();
-		//usbCam.startAutomaticCapture();
+		// usbCam = CameraServer.getInstance();
+		// usbCam.startAutomaticCapture();
 
 		pdp = new PowerDistributionPanel();
 		pdp.clearStickyFaults();
@@ -101,9 +101,9 @@ public class Robot extends IterativeRobot {
 	}
 
 	/**
-	 * This function is called once each time the robot enters Disabled mode. You
-	 * can use it to reset any subsystem information you want to clear when the
-	 * robot is disabled.
+	 * This function is called once each time the robot enters Disabled mode.
+	 * You can use it to reset any subsystem information you want to clear when
+	 * the robot is disabled.
 	 */
 
 	public void disabledInit() {
@@ -123,9 +123,9 @@ public class Robot extends IterativeRobot {
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
-	 * Dashboard, remove all of the chooser code and uncomment the getString code
-	 * to get the auto name from the text box below the Gyro
+	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+	 * getString code to get the auto name from the text box below the Gyro
 	 *
 	 * You can add additional auto modes by adding additional commands to the
 	 * chooser code above (like the commented example) or additional comparisons
@@ -147,65 +147,53 @@ public class Robot extends IterativeRobot {
 		scale_position = gameData.charAt(1) == 'L' ? 0 : 2;
 
 		System.out.println("SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
-		SmartDashboard.putString("lmao", "SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
+		SmartDashboard.putString("lmao",
+				"SWITCH, ROBOT = " + switch_position + "(" + gameData + "), " + robot_position);
 
 		autonomousCommand = auto_chooser.getSelected();
 		SmartDashboard.putString("auto", autonomousCommand);
 
 		System.out.println("auto selected = " + autonomousCommand);
 
+		Command command;
+
 		if (autonomousCommand.equals("switch")) {
 			if (switch_position == robot_position) {
-				SameSwitchAuto command = new SameSwitchAuto();
-				command.start();
+				command = new SameSwitchAuto();
 			} else if (robot_position == 1) {
-				CenterSwitchAuto command = new CenterSwitchAuto();
-				command.start();
+				command = new CenterSwitchAuto();
 			} else if (switch_position != robot_position) {
-				WrongSwitchAuto command = new WrongSwitchAuto();
-				command.start();
+				command = new WrongSwitchAuto();
 			} else {
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new BaseLineAuto();
 			}
-
 		} else if (autonomousCommand.equals("baseline")) {
-			BaseLineAuto command = new BaseLineAuto();
-			command.start();
+			command = new BaseLineAuto();
 		} else if (autonomousCommand.equals("test")) {
-			TestAuto command = new TestAuto();
-			command.start();
+			command = new TestAuto();
 		} else if (autonomousCommand.equals("scale")) {
 			if (robot_position == scale_position) {
-				SameScaleAuto command = new SameScaleAuto();
-				command.start();
-			} else if (robot_position != 1) { //;)
-//				WrongScaleAuto command = new WrongScaleAuto();
-//				command.start();
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new SameScaleAuto();
+			} else if (robot_position != 1) { // ;)
+				// WrongScaleAuto command = new WrongScaleAuto();
+				// command.start();
+				command = new BaseLineAuto();
 			} else {
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new BaseLineAuto();
 			}
-		} else if (autonomousCommand.equals("both")){
-			
+		} else if (autonomousCommand.equals("both")) {
 			if (robot_position == scale_position) {
-				SameScaleAuto command = new SameScaleAuto();
-				command.start();
-			} else if (robot_position == switch_position){
-				SameSwitchAuto command = new SameSwitchAuto();
-				command.start();
-			}else{
-				BaseLineAuto command = new BaseLineAuto();
-				command.start();
+				command = new SameScaleAuto();
+			} else if (robot_position == switch_position) {
+				command = new SameSwitchAuto();
+			} else {
+				command = new BaseLineAuto();
 			}
-			
-			
-		}else{
-			BaseLineAuto command = new BaseLineAuto();
-			command.start();
+		} else {
+			command = new BaseLineAuto();
 		}
+		
+		command.start();
 	}
 
 	public void autonomousPeriodic() {

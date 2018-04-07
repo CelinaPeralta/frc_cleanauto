@@ -104,14 +104,12 @@ public class Elevator extends Subsystem {
 	public void setElevator(double speed) {
 		if (Robot.disable_all) return;
 		
-
 		if (b_bottom && speed < 0)
 			return;
 		if (b_top && speed > 0)
 			return;
 
 		elevatorMotor.set(speed);
-
 	}
 
 }

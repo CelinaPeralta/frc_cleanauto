@@ -1,7 +1,7 @@
 package org.usfirst.frc.team6203.robot.commands;
 
 import org.usfirst.frc.team6203.robot.Robot;
-import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
@@ -12,9 +12,8 @@ public class SameSwitchAuto extends CommandGroup {
 	private double delay = 0.4;
 
 	public SameSwitchAuto() {
-			addSequential(new DriveToTimeout(0.8, 0.8, 1));
-			addSequential(new Wait(0.1));
-			addSequential(new SetElevator(0.5, 3.5));
+			addParallel(new DriveToTimeout(0.8, 0.8, 1));
+			addParallel(new SetElevator(0.5, 3.5));
 			addSequential(new Wait(delay));
 			addSequential(new TurnToSetpoint(Robot.robot_position == 0 ? 90 : -90));
 			addSequential(new Wait(delay));
